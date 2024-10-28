@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "parent.h": "c",
+        "child.h": "c"
+    }
+}

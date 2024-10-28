@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define BOARD_SIZE 9
+#include <stdbool.h>
 
 #endif

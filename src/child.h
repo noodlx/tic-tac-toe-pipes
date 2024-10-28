@@ -2,7 +2,8 @@
 #define CHILD_H
 
 #include "includes.h"
+#include "display.h"
 
-int child(int fd[2]);
+void child(int fd[2], char board[9]);
 
 #endif

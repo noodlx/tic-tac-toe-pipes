@@ -2,7 +2,8 @@
 #define PARENT_H
 
 #include "includes.h"
+#include "display.h"
 
-int parent(int fd[2]);
+void parent(int fd[2], char board[9]);
 
 #endif
