@@ -21,21 +21,25 @@ pipeline {
                 '''
             }
         }
+        stage('pre-analysis SCM') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                def scannerHome = tool 'SonarScanner';
+                withSonarQubeEnv() {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }     
+        }
         stage('Deliver') {
             steps {
                 echo 'Deliver....'
                 sh '''
                 echo "doing delivery stuff.."
                 '''
-            }
-        }
-        stage('SCM') {
-            checkout scm
-        }
-        stage('SonarQube Analysis') {
-            def scannerHome = tool 'SonarScanner';
-            withSonarQubeEnv() {
-                sh "${scannerHome}/bin/sonar-scanner"
             }
         }
     }
