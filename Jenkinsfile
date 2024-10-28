@@ -21,11 +21,6 @@ pipeline {
                 '''
             }
         }
-        stage('pre-analysis SCM') {
-            steps {
-                checkout scm
-            }
-        }
         stage('SonarQube Analysis') {
             steps {
                 script {
