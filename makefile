@@ -1,40 +1,52 @@
-BINARY=bin
-CODEDIRS=. src
+S_BINARY=server/bin
+C_BINARY=client/bin
+
+S_CODEDIRS=server/src
+C_CODEDIRS=client/src
 
 CC=gcc
-OPT=-O0
 
 DEPFLAGS=-MP -MD
 
 CFLAGS=-Wall -Wextra -g $(foreach D,$(INCDIRS),-I$(D)) $(OPT) $(DEPFLAGS) -Isrc
 
-CFILES=$(foreach D,$(CODEDIRS),$(wildcard $(D)/*.c))
-OBJECTS=$(patsubst %.c,%.o,$(CFILES))
-DEPFILES=$(patsubst %.c,%.d,$(CFILES))
+S_CFILES=$(foreach D,$(S_CODEDIRS),$(wildcard $(D)/*.c))
+S_OBJECTS=$(patsubst %.c,%.o,$(S_CFILES))
+S_DEPFILES=$(patsubst %.c,%.d,$(S_CFILES))
 
-all: $(BINARY)
+C_CFILES=$(foreach D,$(C_CODEDIRS),$(wildcard $(D)/*.c))
+C_OBJECTS=$(patsubst %.c,%.o,$(C_CFILES))
+C_DEPFILES=$(patsubst %.c,%.d,$(C_CFILES))
 
-$(BINARY): $(OBJECTS)
+all: server client
+
+server: $(S_BINARY)
+
+client: $(C_BINARY)
+
+$(S_BINARY): $(S_OBJECTS)
 	$(CC) -o $@ $^
 
-    %.o:%.c
+	
+$(C_BINARY): $(C_OBJECTS)
+	$(CC) -o $@ $^
+
+%.o:%.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -rf $(BINARY) $(OBJECTS) $(DEPFILES)
+	rm -rf $(S_BINARY) $(C_BINARY) $(S_OBJECTS) $(C_OBJECTS) $(S_DEPFILES) $(C_DEPFILES)
 
-# shell commands are a set of keystrokes away
 distribute: clean
 	tar zcvf dist.tgz *
 
-# @ silences the printing of the command
-# $(info ...) prints output
 diff:
 	$(info The status of the repository, and the volume of per-file changes:)
 	@git status
 	@git diff --stat
 
 
--include $(DEPFILES)
+-include $(S_DEPFILES)
+-include $(C_DEPFILES)
 
 .PHONY: all clean distribute diff

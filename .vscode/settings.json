@@ -1,6 +1,5 @@
 {
     "files.associations": {
-        "parent.h": "c",
-        "child.h": "c"
+        "stdio.h": "c"
     }
 }
