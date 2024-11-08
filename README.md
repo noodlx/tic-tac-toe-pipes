@@ -1,3 +1,3 @@
 # tic-tac-toe-pipes
 
-small project to mess around with jenkins ci features
+small project to practice make and c sockets
