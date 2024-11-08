@@ -1,5 +1,6 @@
 BINARY=bin
 CODEDIRS=. src
+INCDIRS= 
 
 CC=gcc
 OPT=-O0
@@ -23,12 +24,9 @@ $(BINARY): $(OBJECTS)
 clean:
 	rm -rf $(BINARY) $(OBJECTS) $(DEPFILES)
 
-# shell commands are a set of keystrokes away
 distribute: clean
 	tar zcvf dist.tgz *
 
-# @ silences the printing of the command
-# $(info ...) prints output
 diff:
 	$(info The status of the repository, and the volume of per-file changes:)
 	@git status

@@ -7,8 +7,6 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                make clean
-                make all
                 echo "Building.."
                 sh '''
                 echo "doing build stuff.."
@@ -39,7 +37,6 @@ pipeline {
         }
         stage('Deliver') {
             steps {
-                make distribute
                 echo 'Deliver....'
                 sh '''
                 echo "doing delivery stuff.."

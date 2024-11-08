@@ -19,40 +19,69 @@ int is_valid_move(char board[BOARD_SIZE], int move) {
     return 1;
 }
 
-int main(int argc, char *argv[]) {
+int main() {
     char board[BOARD_SIZE] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
     
-    int fd[2];
-
-    if(pipe(fd) == -1) {
-        perror("Failed to create Pipe...\n");
+    printf("Making pipes\n");
+    int p_fd[2];
+    int c_fd[2];
+    
+    if(pipe(p_fd) == -1 || pipe(c_fd) == -1) {
+        perror("Failed to create Pipes...\n");
         return 1;
     } else {
+        printf("forking...\n");
         pid_t pid = fork();
 
         if(pid == -1) {
             perror("Failed to fork...\n");
             return 1;
-        } else if(pid == 0) { // O PLAYER
+        } else if(pid == 0) { // Child / O PLAYER
+            
             while(1) {
-                child(fd, board);
-                if(check_win(board, 'O')) {
-                    display_board(board);
-                    printf("Player 2 wins!\n");
-                    break;
-                } else if(check_win(board, 'X')) {
-                    break;
+
+                int bytesRead = read(p_fd[0], board, sizeof(board));
+                if(bytesRead == 0) {
+                    perror("C Read Fucked up...");
                 }
-            }
-        } else { // X Player
-            while(1) {
-                parent(fd, board);
                 if(check_win(board, 'X')) {
-                    display_board(board);
-                    printf("Player 1 wins!\n");
                     break;
-                } else if(check_win(board, 'O')) {
+                } else {
+
+                    child(board);
+                    write(c_fd[1], board, sizeof(board));
+                
+                    if(check_win(board, 'O')) {
+                        display_board(board);
+                        printf("Player 2 wins!\n");
+                        break;
+                    } else if(check_win(board, 'X')) {
+                        break;
+                    } 
+                }    
+            }
+        } else { // Parent / X Player
+            write(c_fd[1], board, sizeof(board));
+            
+            while(1) {
+                
+                int bytesRead = read(c_fd[0], board, sizeof(board));
+                if(bytesRead == 0) {
+                    perror("P Read Fucked up...");
+                }
+                if(check_win(board, 'O')) {
                     break;
+                } else {
+                    parent(board);
+                    write(p_fd[1], board, sizeof(board));
+                
+                    if(check_win(board, 'X')) {
+                        display_board(board);
+                        printf("Player 1 wins!\n");
+                        break;
+                    } else if(check_win(board, 'O')) {
+                        break;
+                    } 
                 }
             }
         }

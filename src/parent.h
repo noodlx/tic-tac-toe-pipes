@@ -4,6 +4,6 @@
 #include "includes.h"
 #include "display.h"
 
-void parent(int fd[2], char board[9]);
+void parent(char board[9]);
 
 #endif
